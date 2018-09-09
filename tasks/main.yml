@@ -1,0 +1,24 @@
+- name: copy repo file
+  template: src=kubernetes.repo.j2 dest=/etc/yum.repos.d/kubernetes.repo owner=root group=root
+
+- name: disable selinux
+  selinux: state=disabled
+
+- name: isntall kubelet
+  yum: name=kubelet state=latest disable_gpg_check=yes
+
+- name: install kubeadm
+  yum: name=kubeadm state=latest disable_gpg_check=yes
+
+- name: install kubectl
+  yum: name=kubectl state=latest disable_gpg_check=yes
+
+- name: copy k8s.conf to /etc/sysctl.d/
+  template: src=k8s.conf.j2 dest=/etc/sysctl.d/k8s.conf
+
+- name: apply changes sysctl
+  shell: sysctl --system
+
+- name: Disable swap
+  shell: swapoff -a
+
